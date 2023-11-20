@@ -20,17 +20,18 @@ export default class App extends Component {
 			this.createTask('Editing task'),
 			this.createTask('Active task'),
 		],
-	}
+		filter: 'All'
+	};
 
 	createTask(label) {
 		return {
 			label: label,
 			created: `${this.created()}`,
-			completed: false,
+			completedTask: false,
 			editing: false,
 			id: this.id++,
-		}
-	}
+		};
+	};
 
   toggleProperty(arr, id, propName) {
     const idx = arr.findIndex(el => el.id === id);
@@ -44,10 +45,10 @@ export default class App extends Component {
     ];
   };
 
-	completeTask = id => {
+	completeTask = (id) => {
 		this.setState(({ todoData }) => {
 			return {
-				todoData: this.toggleProperty(todoData, id, 'completed')
+				todoData: this.toggleProperty(todoData, id, 'completedTask')
 			};
 		});
 	};
@@ -98,9 +99,26 @@ export default class App extends Component {
     });
   };
 
+	changeFilter = (data) => {
+		this.setState({filter: data});
+	};
+
+	filteredItems = () => {
+		const {todoData, filter} = this.state;
+		return todoData.filter(({completedTask}) => {
+			const all = filter === 'All';
+			const completed = filter === 'Completed';
+			return all ? true : completed ? completedTask === true : completedTask === false;
+		});
+	};
+
+clearCompleted = () => {
+	this.setState(({todoData}) => ({todoData: todoData.filter((element) => !element.completedTask)}));
+}
+
 	render() {
     const {todoData} = this.state;
-    const doneCount = todoData.filter(el => el.completed).length;
+    const doneCount = todoData.filter(el => el.completedTask).length;
     const todoCount = todoData.length - doneCount;
     
 		return (
@@ -110,14 +128,19 @@ export default class App extends Component {
 					<NewTaskForm onTaskAdded={this.addTask} />
 				</header>
 				<TaskList
-					todos={this.state.todoData}
+					todos={this.filteredItems()}
 					onCompleted={this.completeTask}
 					onEditing={this.editTask}
 					onDeleted={this.deleteTask}
 					onTaskChanged={this.changeTask}
 				/>
-				<Footer toDo={todoCount} />
+				<Footer
+					toDo={todoCount}
+					changeFilter={this.changeFilter}
+					filter={this.state.filter}
+					clearCompleted={this.clearCompleted}
+				/>
 			</section>
-		)
-	}
+		);
+	};
 };

@@ -22,6 +22,7 @@ export default class EditingTaskForm extends Component {
 				<input
 					type='text'
 					className='edit'
+					autoFocus={true}
 					value={this.state.label}
 					onChange={this.onTaskChange}
 				/>

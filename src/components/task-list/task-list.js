@@ -6,19 +6,19 @@ const TaskList = ({
 	onCompleted,
 	onEditing,
 	onDeleted,
-	onTaskChanged,
-	taskLabel
+	onTaskChanged
 }) => {
 	const elements = todos.map(task => {
-		const { id, completed, editing, ...taskProps } = task
+		const { id, completedTask, editing, ...taskProps } = task
 		let className = ''
-		if (completed) className = 'completed'
+		if (completedTask) className = 'completed'
 		else if (editing) className = 'editing'
 
 		return (
 			<li key={id} className={className}>
 				<Task
 					{...taskProps}
+					checked={completedTask}
 					onCompleted={() => onCompleted(id)}
 					onEditing={() => onEditing(id)}
 					onDeleted={() => onDeleted(id)}

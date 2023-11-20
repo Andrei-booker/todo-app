@@ -1,17 +1,18 @@
 import { Component } from "react";
 
 export default class Task extends Component {
-
 	render() {
-		const { label, created, onCompleted, onEditing, 
-						onDeleted } = this.props;
-
+		const { label, created, onCompleted, onEditing, onDeleted, checked } =
+			this.props
+	
 		return (
 			<div className='view'>
-				<input 
-          className='toggle'
-          type='checkbox'
-          onClick={onCompleted} />
+				<input
+					checked={checked}
+					className='toggle'
+					type='checkbox'
+					onChange={onCompleted}
+				/>
 				<label>
 					<span className='description'>{label}</span>
 					<span className='created'>created {created}</span>
