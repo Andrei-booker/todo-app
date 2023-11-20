@@ -8,92 +8,115 @@ import { Component } from 'react';
 // import './app.css'
 
 export default class App extends Component {
+	id = 1;
+
 	created = () => {
 		return formatDistanceToNow(new Date(), { includeSeconds: true })
 	}
 
 	state = {
 		todoData: [
-			{
-				label: 'Completed task',
-				created: `${this.created()}`,
-				completed: false,
-				editing: false,
-				id: 1,
-			},
-			{
-				label: 'Editing task',
-				created: `${this.created()}`,
-				completed: false,
-				editing: false,
-				id: 2,
-			},
-			{
-				label: 'Active task',
-				created: `${this.created()}`,
-				completed: false,
-				editing: false,
-				id: 3,
-			},
+			this.createTask('Completed task'),
+			this.createTask('Editing task'),
+			this.createTask('Active task'),
 		],
 	}
 
-	toDoCount = () => {
-		return this.state.todoData.reduce((acc, current) => {
-			if (!current.completed) acc++;
-			return acc;
-		}, 0);
-	};
+	createTask(label) {
+		return {
+			label: label,
+			created: `${this.created()}`,
+			completed: false,
+			editing: false,
+			id: this.id++,
+		}
+	}
+
+  toggleProperty(arr, id, propName) {
+    const idx = arr.findIndex(el => el.id === id);
+    const oldItem = arr[idx];
+    const newItem = {...oldItem, [propName]: !oldItem[propName]};
+
+    return [
+      ...arr.slice(0, idx),
+      newItem,
+      ...arr.slice(idx + 1)
+    ];
+  };
 
 	completeTask = id => {
 		this.setState(({ todoData }) => {
-			const idx = todoData.findIndex(el => el.id === id);
-			todoData[idx].completed = !todoData[idx].completed;
 			return {
-				todoData: todoData,
+				todoData: this.toggleProperty(todoData, id, 'completed')
 			};
 		});
 	};
 
 	editTask = id => {
 		this.setState(({ todoData }) => {
-			const idx = todoData.findIndex(el => el.id === id);
-			todoData[idx].editing = !todoData[idx].editing;
 			return {
-				todoData: todoData,
+				todoData: this.toggleProperty(todoData, id, 'editing'),
 			};
 		});
 	};
 
-  deleteTask = id => {
-    this.setState(({ todoData }) => {
-			const idx = todoData.findIndex(el => el.id === id);
+	deleteTask = id => {
+		this.setState(({ todoData }) => {
+			const idx = todoData.findIndex(el => el.id === id)
 
-      const newArray = [
-        ...todoData.slice(0, idx),
-        ...todoData.slice(idx + 1)
-      ];
+			const newArray = [...todoData.slice(0, idx), ...todoData.slice(idx + 1)]
 
 			return {
-				todoData: newArray
-			};
-		});
+				todoData: newArray,
+			}
+		})
+	};
+
+  addTask = text => {
+    const newTask = this.createTask(text);
+
+    this.setState(({todoData}) => {
+      const newArr = [...todoData, newTask];
+
+      return {
+        todoData: newArr
+      };
+    });
+  };
+
+  changeTask = (id, text) => {
+    this.setState(({todoData}) => {
+      const idx = todoData.findIndex(el => el.id === id);
+			const oldTask = todoData[idx];
+			const changedTask = {...oldTask, editing: false, label: text};
+      const newArr = [...todoData.slice(0, idx),
+                      changedTask,
+                      ...todoData.slice(idx + 1)];
+      return {
+        todoData: newArr
+      };                 
+    });
   };
 
 	render() {
+    const {todoData} = this.state;
+    const doneCount = todoData.filter(el => el.completed).length;
+    const todoCount = todoData.length - doneCount;
+    
 		return (
 			<section className='todoapp'>
 				<header className='header'>
 					<h1>todos</h1>
-					<NewTaskForm />
+					<NewTaskForm onTaskAdded={this.addTask} />
 				</header>
 				<TaskList
 					todos={this.state.todoData}
 					onCompleted={this.completeTask}
 					onEditing={this.editTask}
-          onDeleted={this.deleteTask}
+					onDeleted={this.deleteTask}
+					onTaskChanged={this.changeTask}
 				/>
-				<Footer toDo={this.toDoCount()} />
+				<Footer toDo={todoCount} />
 			</section>
 		)
 	}
