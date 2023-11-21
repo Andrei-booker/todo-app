@@ -1,3 +1,3 @@
-import EditingTaskForm from "./editing-task-form";
+import EditingTaskForm from './editing-task-form';
 
 export default EditingTaskForm;
