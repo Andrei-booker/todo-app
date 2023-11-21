@@ -1,6 +1,12 @@
 import { Component } from "react";
 
+import PropTypes from 'prop-types';
+
 export default class EditingTaskForm extends Component {
+	static propTypes = {
+		onTaskChanged: PropTypes.func.isRequired
+	};
+
 	state = {
 		label: this.props.label,
 	}

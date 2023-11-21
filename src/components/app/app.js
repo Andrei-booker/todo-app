@@ -2,17 +2,12 @@ import NewTaskForm from '../new-task-form';
 import TaskList from '../task-list';
 import Footer from '../app-footer';
 
-import { formatDistanceToNow } from 'date-fns'
 import { Component } from 'react';
 
 // import './app.css'
 
 export default class App extends Component {
 	id = 1;
-
-	created = () => {
-		return formatDistanceToNow(new Date(), { includeSeconds: true })
-	}
 
 	state = {
 		todoData: [
@@ -26,7 +21,7 @@ export default class App extends Component {
 	createTask(label) {
 		return {
 			label: label,
-			created: `${this.created()}`,
+			date: new Date(),
 			completedTask: false,
 			editing: false,
 			id: this.id++,

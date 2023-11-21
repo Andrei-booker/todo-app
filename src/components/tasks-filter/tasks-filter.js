@@ -1,9 +1,15 @@
-// import './item-status-filter.css';
+import PropTypes from 'prop-types';
 
 import { Component } from "react";
 
 export default class TasksFilter extends Component {
-
+	static defaultProps = {
+		filter: 'All'
+	}
+	static propTypes = {
+		changeFilter: PropTypes.func.isRequired,
+		filter: PropTypes.string,
+	}
   render() {
 		const {changeFilter, filter} = this.props;
     return (

@@ -1,5 +1,6 @@
 import Task from '../task';
 import EditingTaskForm from './editing-task-form';
+import PropTypes from 'prop-types';
 
 const TaskList = ({
 	todos,
@@ -9,10 +10,10 @@ const TaskList = ({
 	onTaskChanged
 }) => {
 	const elements = todos.map(task => {
-		const { id, completedTask, editing, ...taskProps } = task
-		let className = ''
-		if (completedTask) className = 'completed'
-		else if (editing) className = 'editing'
+		const { id, completedTask, editing, ...taskProps } = task;
+		let className = '';
+		if (completedTask) className = 'completed';
+		else if (editing) className = 'editing';
 
 		return (
 			<li key={id} className={className}>
@@ -25,9 +26,21 @@ const TaskList = ({
 				/>
 				<EditingTaskForm onTaskChanged={(text) => onTaskChanged(id, text)} label={task.label}/>
 			</li>
-		)
-	})
-	return <ul className='todo-list'>{elements}</ul>
-}
+		);
+	});
+	return <ul className='todo-list'>{elements}</ul>;
+};
+
+TaskList.defaultProps = {
+	todos: {},
+};
+
+TaskList.propTypes = {
+	todos: PropTypes.any,
+	onCompleted: PropTypes.func.isRequired,
+	onEditing: PropTypes.func.isRequired,
+	onDeleted: PropTypes.func.isRequired,
+	onTaskChanged: PropTypes.func.isRequired
+};
 
 export default TaskList;

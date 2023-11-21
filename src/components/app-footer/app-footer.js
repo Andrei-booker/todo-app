@@ -1,9 +1,19 @@
-// import './app-header.css'
+import PropTypes from 'prop-types';
 
 import { Component } from "react";
 import TasksFilter from "../tasks-filter";
 
 export default class Footer extends Component {
+  static defaultProps = {
+    toDo: 0,
+    filter: 'All'
+  };
+  static propTypes = {
+    toDo: PropTypes.number,
+    clearCompleted: PropTypes.func.isRequired,
+    changeFilter: PropTypes.func.isRequired,
+    filter: PropTypes.string
+  }
   render () {
     const { toDo, changeFilter, filter, clearCompleted} = this.props
     return (
