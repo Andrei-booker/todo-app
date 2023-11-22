@@ -1,29 +1,36 @@
 import PropTypes from 'prop-types';
-
-import { Component } from "react";
+import { Component } from 'react';
 
 export default class TasksFilter extends Component {
-	static defaultProps = {
-		filter: 'All'
-	}
-	static propTypes = {
-		changeFilter: PropTypes.func.isRequired,
-		filter: PropTypes.string,
-	}
+  static defaultProps = {
+    filter: 'All',
+  };
+
+  static propTypes = {
+    changeFilter: PropTypes.func.isRequired,
+    filter: PropTypes.string,
+  };
+
   render() {
-		const {changeFilter, filter} = this.props;
+    const { changeFilter, filter } = this.props;
     return (
-			<ul className='filters'>
-				<li>
-					<button className={filter ==='All' ? 'selected' : null} onClick={() => changeFilter('All')}>All</button>
-				</li>
-				<li>
-					<button className={filter ==='Active' ? 'selected' : null} onClick={() => changeFilter('Active')}>Active</button>
-				</li>
-				<li>
-					<button className={filter ==='Completed' ? 'selected' : null} onClick={() => changeFilter('Completed')}>Completed</button>
-				</li>
-			</ul>
-		)
+      <ul className="filters">
+        <li>
+          <button className={filter === 'All' ? 'selected' : null} onClick={() => changeFilter('All')}>
+            All
+          </button>
+        </li>
+        <li>
+          <button className={filter === 'Active' ? 'selected' : null} onClick={() => changeFilter('Active')}>
+            Active
+          </button>
+        </li>
+        <li>
+          <button className={filter === 'Completed' ? 'selected' : null} onClick={() => changeFilter('Completed')}>
+            Completed
+          </button>
+        </li>
+      </ul>
+    );
   }
-};
+}

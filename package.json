@@ -7,11 +7,10 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^2.30.0",
-    "prettier": "^3.1.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -19,9 +18,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --debug src/",
-    "lint:write": "eslint --debug src/ --fix",
-    "prettier": "prettier — write src/**/*.js"
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "prettier": "prettier --write src/**/*.js"
   },
   "husky": {
     "hooks": {
@@ -53,9 +52,20 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/eslint-parser": "^7.23.3",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.54.0",
     "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
-    "lint-staged": "^15.1.0"
+    "lint-staged": "^15.1.0",
+    "prettier": "^3.1.0"
   }
 }
