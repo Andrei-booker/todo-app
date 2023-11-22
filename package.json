@@ -20,16 +20,12 @@
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "prettier": "prettier --write src/**/*.js"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "prettier": "prettier --write src/**/*.js",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "*.(js|jsx)": [
-      "npm run lint:write",
+      "npm run lint:fix",
       "git add"
     ]
   },
@@ -54,6 +50,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/eslint-parser": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.54.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -64,7 +61,7 @@
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "husky": "^8.0.3",
+    "husky": "^8.0.0",
     "lint-staged": "^15.1.0",
     "prettier": "^3.1.0"
   }
