@@ -11,22 +11,28 @@ export default class TasksFilter extends Component {
     filter: PropTypes.string,
   };
 
+  onClick = (e) => {
+    const filterItem = e.target.textContent;
+    this.props.changeFilter(filterItem);
+  };
+
   render() {
-    const { changeFilter, filter } = this.props;
+    const { filter } = this.props;
+
     return (
       <ul className="filters">
         <li>
-          <button className={filter === 'All' ? 'selected' : null} onClick={() => changeFilter('All')}>
+          <button className={filter === 'All' ? 'selected' : null} onClick={this.onClick}>
             All
           </button>
         </li>
         <li>
-          <button className={filter === 'Active' ? 'selected' : null} onClick={() => changeFilter('Active')}>
+          <button className={filter === 'Active' ? 'selected' : null} onClick={this.onClick}>
             Active
           </button>
         </li>
         <li>
-          <button className={filter === 'Completed' ? 'selected' : null} onClick={() => changeFilter('Completed')}>
+          <button className={filter === 'Completed' ? 'selected' : null} onClick={this.onClick}>
             Completed
           </button>
         </li>

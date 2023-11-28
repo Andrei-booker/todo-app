@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 
+import EditingTaskForm from '../editing-task-form';
 import Task from '../task';
-
-import EditingTaskForm from './editing-task-form';
 
 function TaskList({ todos, onCompleted, onEditing, onDeleted, onTaskChanged }) {
   const elements = todos.map((task) => {

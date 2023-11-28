@@ -4,8 +4,6 @@ import NewTaskForm from '../new-task-form';
 import TaskList from '../task-list';
 import Footer from '../app-footer';
 
-// import './app.css'
-
 export default class App extends Component {
   id = 1;
 
@@ -84,21 +82,25 @@ export default class App extends Component {
     this.setState({ filter: data });
   };
 
-  filteredItems = () => {
-    const { todoData, filter } = this.state;
-    return todoData.filter(({ completedTask }) => {
-      const all = filter === 'All';
-      const completed = filter === 'Completed';
-      return all ? true : completed ? completedTask === true : completedTask === false;
-    });
-  };
+  // eslint-disable-next-line consistent-return
+  filteredItems(todoData, filter) {
+    if (filter === 'All') {
+      return todoData;
+    }
+    if (filter === 'Active') {
+      return todoData.filter((todo) => !todo.completedTask);
+    }
+    if (filter === 'Completed') {
+      return todoData.filter((todo) => todo.completedTask);
+    }
+  }
 
   clearCompleted = () => {
     this.setState(({ todoData }) => ({ todoData: todoData.filter((element) => !element.completedTask) }));
   };
 
   render() {
-    const { todoData } = this.state;
+    const { todoData, filter } = this.state;
     const doneCount = todoData.filter((el) => el.completedTask).length;
     const todoCount = todoData.length - doneCount;
 
@@ -109,7 +111,7 @@ export default class App extends Component {
           <NewTaskForm onTaskAdded={this.addTask} />
         </header>
         <TaskList
-          todos={this.filteredItems()}
+          todos={this.filteredItems(todoData, filter)}
           onCompleted={this.completeTask}
           onEditing={this.editTask}
           onDeleted={this.deleteTask}
