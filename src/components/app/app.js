@@ -120,7 +120,7 @@ export default class App extends Component {
         <Footer
           toDo={todoCount}
           changeFilter={this.changeFilter}
-          filter={this.state.filter}
+          filter={filter}
           clearCompleted={this.clearCompleted}
         />
       </section>
