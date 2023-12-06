@@ -1,33 +1,49 @@
-import { Component } from 'react';
+import { React, Component } from 'react';
 
 export default class NewTaskForm extends Component {
   state = {
     label: '',
+    min: '',
+    sec: '',
   };
 
   onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    });
+    const { target } = e;
+    const { value } = target;
+    const { name } = target;
+    // eslint-disable-next-line no-unused-vars
+    this.setState((state) => ({
+      [name]: value,
+    }));
   };
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.onTaskAdded(this.state.label);
-    this.setState({
-      label: '',
-    });
+    const { label, min, sec } = this.state;
+    this.props.onTaskAdded(label, min, sec);
+    this.setState({ label: '', min: '', sec: '' });
   };
 
   render() {
+    const { min, sec, label } = this.state;
     return (
-      <form onSubmit={this.onSubmit}>
+      <form className="new-todo-form" onSubmit={this.onSubmit}>
+        <input name="label" className="new-todo" placeholder="Task" onChange={this.onLabelChange} value={label} />
         <input
-          className="new-todo"
-          placeholder="What needs to be done?"
+          value={min}
+          name="min"
+          className="new-todo-form__timer"
+          placeholder="Min"
           onChange={this.onLabelChange}
-          value={this.state.label}
         />
+        <input
+          value={sec}
+          name="sec"
+          className="new-todo-form__timer"
+          placeholder="Sec"
+          onChange={this.onLabelChange}
+        />
+        <button type="submit" />
       </form>
     );
   }

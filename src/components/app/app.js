@@ -8,18 +8,35 @@ export default class App extends Component {
   id = 1;
 
   state = {
-    todoData: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
+    todoData: [
+      this.createTask('Completed task', '12', '25'),
+      this.createTask('Editing task', '12', '25'),
+      this.createTask('Active task', '12', '25'),
+    ],
     filter: 'All',
   };
 
-  createTask(label) {
+  createTask(label, min = '00', sec = '00') {
     return {
       label,
       date: new Date(),
       completedTask: false,
       editing: false,
       id: this.id++,
+      timer: { min, sec },
     };
+  }
+
+  minuteCheck(min) {
+    if (!min) return '00';
+    if (min.length < 2) return `0${min}`;
+    return min;
+  }
+
+  secondsCheck(sec) {
+    if (!sec) return '00';
+    if (sec.length < 2) return `0${sec}`;
+    return sec;
   }
 
   toggleProperty(arr, id, propName) {
@@ -54,9 +71,9 @@ export default class App extends Component {
     });
   };
 
-  addTask = (text) => {
-    const newTask = this.createTask(text);
-
+  addTask = (text, min, sec) => {
+    if (!text) return;
+    const newTask = this.createTask(text, this.minuteCheck(min), this.secondsCheck(sec));
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newTask];
 
@@ -82,17 +99,14 @@ export default class App extends Component {
     this.setState({ filter: data });
   };
 
-  // eslint-disable-next-line consistent-return
   filteredItems(todoData, filter) {
-    if (filter === 'All') {
-      return todoData;
-    }
     if (filter === 'Active') {
       return todoData.filter((todo) => !todo.completedTask);
     }
     if (filter === 'Completed') {
       return todoData.filter((todo) => todo.completedTask);
     }
+    return todoData;
   }
 
   clearCompleted = () => {
