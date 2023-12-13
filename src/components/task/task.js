@@ -24,45 +24,41 @@ export default class Task extends Component {
     if (sec === '00' && min === '00') return;
     if (sec === '00' && min !== '00') {
       const minutes = min[0] !== '0' ? `${min - 1}` : `0${min - 1}`;
-      // eslint-disable-next-line no-unused-vars
-      this.setState((state) => ({ min: minutes, sec: '59' }));
+      this.setState({ min: minutes, sec: '59' });
     } else {
       const newSec = Number(sec - 1);
       const newSecToString = newSec < 10 ? `0${newSec}` : newSec;
-      // eslint-disable-next-line no-unused-vars
-      this.setState((state) => ({
-        sec: newSecToString,
-      }));
+      this.setState({ sec: newSecToString });
     }
   };
 
   playTimer = () => {
-    // eslint-disable-next-line no-unused-vars
-    this.setState((state) => ({
-      play: true,
-    }));
+    this.setState({ play: true });
   };
 
   pauseTimer = () => {
-    // eslint-disable-next-line no-unused-vars
-    this.setState((state) => ({
-      play: false,
-    }));
+    this.setState({ play: false });
   };
+
+  updateTime() {
+    const { min, sec } = this.state;
+    this.props.updateTime(min, sec);
+  }
 
   componentDidMount() {
     this.timer();
-    this.interval = setInterval(this.timer, 1000);
+    setInterval(this.timer, 1000);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { play } = this.state;
+    if (this.state !== prevState && play) {
+      this.updateTime();
+    }
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.play !== prevState.play) {
-      this.timer();
-    }
   }
 
   onChange = (e) => {

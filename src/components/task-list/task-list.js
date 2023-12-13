@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import EditingTaskForm from '../editing-task-form';
 import Task from '../task';
 
-function TaskList({ todos, onCompleted, onEditing, onDeleted, onTaskChanged }) {
+function TaskList({ todos, onCompleted, onEditing, onDeleted, onTaskChanged, updateTime }) {
   const elements = todos.map((task) => {
     const { id, completedTask, editing, ...taskProps } = task;
     let className = '';
@@ -14,6 +14,9 @@ function TaskList({ todos, onCompleted, onEditing, onDeleted, onTaskChanged }) {
       <li key={id} className={className}>
         <Task
           {...taskProps}
+          updateTime={(min, sec) => updateTime(id, min, sec)}
+          // min={task.timer.min}
+          // sec={task.timer.sec}
           checked={completedTask}
           onCompleted={() => onCompleted(id)}
           onEditing={() => onEditing(id)}

@@ -95,6 +95,18 @@ export default class App extends Component {
     });
   };
 
+  updateTime = (id, min, sec) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+      const oldTask = todoData[idx];
+      const changedTask = { ...oldTask, editing: false, timer: { min, sec } };
+      const newArr = [...todoData.slice(0, idx), changedTask, ...todoData.slice(idx + 1)];
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
   changeFilter = (data) => {
     this.setState({ filter: data });
   };
@@ -125,6 +137,7 @@ export default class App extends Component {
           <NewTaskForm onTaskAdded={this.addTask} />
         </header>
         <TaskList
+          updateTime={this.updateTime}
           todos={this.filteredItems(todoData, filter)}
           onCompleted={this.completeTask}
           onEditing={this.editTask}
