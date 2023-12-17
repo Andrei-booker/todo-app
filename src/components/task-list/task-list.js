@@ -15,8 +15,6 @@ function TaskList({ todos, onCompleted, onEditing, onDeleted, onTaskChanged, upd
         <Task
           {...taskProps}
           updateTime={(min, sec) => updateTime(id, min, sec)}
-          // min={task.timer.min}
-          // sec={task.timer.sec}
           checked={completedTask}
           onCompleted={() => onCompleted(id)}
           onEditing={() => onEditing(id)}
@@ -30,11 +28,11 @@ function TaskList({ todos, onCompleted, onEditing, onDeleted, onTaskChanged, upd
 }
 
 TaskList.defaultProps = {
-  todos: {},
+  todos: [],
 };
 
 TaskList.propTypes = {
-  todos: PropTypes.any,
+  todos: PropTypes.array,
   onCompleted: PropTypes.func.isRequired,
   onEditing: PropTypes.func.isRequired,
   onDeleted: PropTypes.func.isRequired,

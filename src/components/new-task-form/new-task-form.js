@@ -1,50 +1,41 @@
-import { React, Component } from 'react';
+import { React, useState } from 'react';
 
-export default class NewTaskForm extends Component {
-  state = {
-    label: '',
-    min: '',
-    sec: '',
+function NewTaskForm({ onTaskAdded }) {
+  const [label, setLabel] = useState('');
+  const [min, setMin] = useState('');
+  const [sec, setSec] = useState('');
+
+  const onLabelChange = (e) => {
+    const { value } = e.target;
+    setLabel(value);
   };
 
-  onLabelChange = (e) => {
-    const { target } = e;
-    const { value } = target;
-    const { name } = target;
-    // eslint-disable-next-line no-unused-vars
-    this.setState((state) => ({
-      [name]: value,
-    }));
+  const onMinChange = (e) => {
+    const { value } = e.target;
+    setMin(value);
   };
 
-  onSubmit = (e) => {
+  const onSecChange = (e) => {
+    const { value } = e.target;
+    setSec(value);
+  };
+
+  const onSubmit = (e) => {
     e.preventDefault();
-    const { label, min, sec } = this.state;
-    this.props.onTaskAdded(label, min, sec);
-    this.setState({ label: '', min: '', sec: '' });
+    onTaskAdded(label, min, sec);
+    setLabel('');
+    setMin('');
+    setSec('');
   };
 
-  render() {
-    const { min, sec, label } = this.state;
-    return (
-      <form className="new-todo-form" onSubmit={this.onSubmit}>
-        <input name="label" className="new-todo" placeholder="Task" onChange={this.onLabelChange} value={label} />
-        <input
-          value={min}
-          name="min"
-          className="new-todo-form__timer"
-          placeholder="Min"
-          onChange={this.onLabelChange}
-        />
-        <input
-          value={sec}
-          name="sec"
-          className="new-todo-form__timer"
-          placeholder="Sec"
-          onChange={this.onLabelChange}
-        />
-        <button type="submit" />
-      </form>
-    );
-  }
+  return (
+    <form className="new-todo-form" onSubmit={onSubmit}>
+      <input name="label" className="new-todo" placeholder="Task" onChange={onLabelChange} value={label} />
+      <input value={min} name="min" className="new-todo-form__timer" placeholder="Min" onChange={onMinChange} />
+      <input value={sec} name="sec" className="new-todo-form__timer" placeholder="Sec" onChange={onSecChange} />
+      <button type="submit" />
+    </form>
+  );
 }
+
+export default NewTaskForm;

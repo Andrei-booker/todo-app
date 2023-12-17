@@ -1,31 +1,28 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
-export default class EditingTaskForm extends Component {
-  static propTypes = {
-    onTaskChanged: PropTypes.func.isRequired,
+function EditingTaskForm({ label, onTaskChanged }) {
+  const [newLabel, setNewLabel] = useState(label);
+
+  const onTaskChange = (e) => {
+    const { value } = e.target;
+    setNewLabel(value);
   };
 
-  state = {
-    label: this.props.label,
-  };
-
-  onTaskChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    });
-  };
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    this.props.onTaskChanged(this.state.label);
+    onTaskChanged(newLabel);
   };
 
-  render() {
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input type="text" className="edit" value={this.state.label} onChange={this.onTaskChange} />
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={onSubmit}>
+      <input type="text" className="edit" value={newLabel} onChange={onTaskChange} />
+    </form>
+  );
 }
+
+EditingTaskForm.propTypes = {
+  onTaskChanged: PropTypes.func.isRequired,
+};
+
+export default EditingTaskForm;

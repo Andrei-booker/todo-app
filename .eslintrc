@@ -29,8 +29,10 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier", "import", "jsx-a11y"],
+  "plugins": ["react", "react-hooks", "prettier", "import", "jsx-a11y"],
   "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "indent": ["error", 2],
     "prettier/prettier": "error",
     "linebreak-style": [0, "unix"],
