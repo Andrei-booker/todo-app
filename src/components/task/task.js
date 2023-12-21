@@ -13,63 +13,42 @@ export default class Task extends Component {
   };
 
   state = {
-    min: this.props.timer.min,
-    sec: this.props.timer.sec,
     play: false,
   };
 
-  timer = () => {
-    const { min, sec, play } = this.state;
-    if (!play) return;
-    if (sec === '00' && min === '00') return;
-    if (sec === '00' && min !== '00') {
-      const minutes = min[0] !== '0' ? `${min - 1}` : `0${min - 1}`;
-      this.setState({ min: minutes, sec: '59' });
-    } else {
-      const newSec = Number(sec - 1);
-      const newSecToString = newSec < 10 ? `0${newSec}` : newSec;
-      this.setState({ sec: newSecToString });
-    }
-  };
+  timer = this.props.timerId;
 
   playTimer = () => {
+    if (this.state.play) return;
+    const { startTimer, setTimerId } = this.props;
+    this.timer = setInterval(() => {
+      startTimer();
+    }, 1000);
+    setTimerId(this.timer);
     this.setState({ play: true });
   };
 
   pauseTimer = () => {
+    const { setTimerId } = this.props;
+    setTimerId(null);
+    clearInterval(this.timer);
     this.setState({ play: false });
   };
-
-  updateTime() {
-    const { min, sec } = this.state;
-    this.props.updateTime(min, sec);
-  }
-
-  componentDidMount() {
-    this.timer();
-    setInterval(this.timer, 1000);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { play } = this.state;
-    if (this.state !== prevState && play) {
-      this.updateTime();
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
 
   onChange = (e) => {
     const { onCompleted } = this.props;
     onCompleted(e);
-    this.setState({ play: false });
+    this.props.setTimerId(null);
+    clearInterval(this.timer);
+  };
+
+  delete = () => {
+    clearInterval(this.timer);
+    this.props.onDeleted();
   };
 
   render() {
-    const { label, date, onEditing, onDeleted, checked } = this.props;
-    const { min, sec } = this.state;
+    const { label, date, onEditing, checked, min, sec } = this.props;
     return (
       <div className="view">
         <input checked={checked} className="toggle" type="checkbox" onChange={this.onChange} />
@@ -89,7 +68,7 @@ export default class Task extends Component {
           </span>
         </label>
         <button className="icon icon-edit" onClick={onEditing} />
-        <button className="icon icon-destroy" onClick={onDeleted} />
+        <button className="icon icon-destroy" onClick={this.delete} />
       </div>
     );
   }

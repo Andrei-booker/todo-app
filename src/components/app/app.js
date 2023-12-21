@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 
 import NewTaskForm from '../new-task-form';
 import TaskList from '../task-list';
@@ -7,36 +7,30 @@ import Footer from '../app-footer';
 export default class App extends Component {
   id = 1;
 
+  timeToString(time) {
+    return time.toString().padStart(2, '0');
+  }
+
   state = {
     todoData: [
-      this.createTask('Completed task', '12', '25'),
-      this.createTask('Editing task', '12', '25'),
-      this.createTask('Active task', '12', '25'),
+      this.createTask('Completed task', 12, 25),
+      this.createTask('Editing task', 6, 25),
+      this.createTask('Active task', 3, 25),
     ],
     filter: 'All',
   };
 
-  createTask(label, min = '00', sec = '00') {
+  createTask(label, min = 0, sec = 0) {
     return {
       label,
       date: new Date(),
       completedTask: false,
       editing: false,
       id: this.id++,
-      timer: { min, sec },
+      min: this.timeToString(min),
+      sec: this.timeToString(sec),
+      timerId: null,
     };
-  }
-
-  minuteCheck(min) {
-    if (!min) return '00';
-    if (min.length < 2) return `0${min}`;
-    return min;
-  }
-
-  secondsCheck(sec) {
-    if (!sec) return '00';
-    if (sec.length < 2) return `0${sec}`;
-    return sec;
   }
 
   toggleProperty(arr, id, propName) {
@@ -73,7 +67,7 @@ export default class App extends Component {
 
   addTask = (text, min, sec) => {
     if (!text) return;
-    const newTask = this.createTask(text, this.minuteCheck(min), this.secondsCheck(sec));
+    const newTask = this.createTask(text, min, sec);
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newTask];
 
@@ -95,11 +89,35 @@ export default class App extends Component {
     });
   };
 
-  updateTime = (id, min, sec) => {
+  startTimer = (id) => {
     this.setState(({ todoData }) => {
       const idx = todoData.findIndex((el) => el.id === id);
       const oldTask = todoData[idx];
-      const changedTask = { ...oldTask, editing: false, timer: { min, sec } };
+      const { min, sec } = oldTask;
+      let newMin = min;
+      let newSec = sec - 1;
+      if (newSec < 0) {
+        if (newMin <= 0) {
+          newMin = 0;
+          newSec = 0;
+        } else {
+          newSec = 59;
+          newMin = min - 1;
+        }
+      }
+      const changedTask = { ...oldTask, min: this.timeToString(newMin), sec: this.timeToString(newSec) };
+      const newArr = [...todoData.slice(0, idx), changedTask, ...todoData.slice(idx + 1)];
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
+  setTimerId = (id, timerId) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+      const oldTask = todoData[idx];
+      const changedTask = { ...oldTask, timerId };
       const newArr = [...todoData.slice(0, idx), changedTask, ...todoData.slice(idx + 1)];
       return {
         todoData: newArr,
@@ -137,7 +155,8 @@ export default class App extends Component {
           <NewTaskForm onTaskAdded={this.addTask} />
         </header>
         <TaskList
-          updateTime={this.updateTime}
+          startTimer={this.startTimer}
+          setTimerId={this.setTimerId}
           todos={this.filteredItems(todoData, filter)}
           onCompleted={this.completeTask}
           onEditing={this.editTask}
