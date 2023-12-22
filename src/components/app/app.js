@@ -7,37 +7,31 @@ import Footer from '../app-footer';
 function App() {
   let id = Math.random();
 
-  const createTask = (label, min = '00', sec = '00') => {
+  const timeToString = (time) => {
+    return time.toString().padStart(2, '0');
+  };
+
+  const createTask = (label, min = 0, sec = 0) => {
     return {
       label,
       date: new Date(),
       completedTask: false,
       editing: false,
       id: id++,
-      timer: { min, sec },
+      min: timeToString(min),
+      sec: timeToString(sec),
+      timerId: null,
     };
   };
 
   const initialState = [
-    createTask('Completed task', '12', '25'),
-    createTask('Editing task', '12', '25'),
-    createTask('Active task', '12', '25'),
+    createTask('Completed task', 12, 25),
+    createTask('Editing task', 12, 25),
+    createTask('Active task', 12, 25),
   ];
 
   const [todoData, setTodoData] = useState(initialState);
   const [filter, setFilter] = useState('All');
-
-  const minuteCheck = (min) => {
-    if (!min) return '00';
-    if (min.length < 2) return `0${min}`;
-    return min;
-  };
-
-  const secondsCheck = (sec) => {
-    if (!sec) return '00';
-    if (sec.length < 2) return `0${sec}`;
-    return sec;
-  };
 
   const toggleProperty = (arr, itemId, propName) => {
     const idx = arr.findIndex((el) => el.id === itemId);
@@ -48,39 +42,31 @@ function App() {
   };
 
   const completeTask = (itemId) => {
-    // eslint-disable-next-line no-shadow
     setTodoData((todoData) => toggleProperty(todoData, itemId, 'completedTask'));
   };
 
   const editTask = (itemId) => {
-    // eslint-disable-next-line no-shadow
     setTodoData((todoData) => toggleProperty(todoData, itemId, 'editing'));
   };
 
   const deleteTask = (itemId) => {
-    // eslint-disable-next-line no-shadow
     setTodoData((todoData) => {
       const idx = todoData.findIndex((el) => el.id === itemId);
-
       const newArray = [...todoData.slice(0, idx), ...todoData.slice(idx + 1)];
-
       return newArray;
     });
   };
 
   const addTask = (text, min, sec) => {
     if (!text) return;
-    const newTask = createTask(text, minuteCheck(min), secondsCheck(sec));
-    // eslint-disable-next-line no-shadow
+    const newTask = createTask(text, min, sec);
     setTodoData((todoData) => {
       const newArr = [...todoData, newTask];
-
       return newArr;
     });
   };
 
   const changeTask = (itemId, text) => {
-    // eslint-disable-next-line no-shadow
     setTodoData((todoData) => {
       const idx = todoData.findIndex((el) => el.id === itemId);
       const oldTask = todoData[idx];
@@ -90,12 +76,33 @@ function App() {
     });
   };
 
-  const updateTime = (itemId, min, sec) => {
-    // eslint-disable-next-line no-shadow
+  const startTimer = (itemId) => {
     setTodoData((todoData) => {
       const idx = todoData.findIndex((el) => el.id === itemId);
       const oldTask = todoData[idx];
-      const changedTask = { ...oldTask, editing: false, timer: { min, sec } };
+      const { min, sec } = oldTask;
+      let newMin = min;
+      let newSec = sec - 1;
+      if (newSec < 0) {
+        if (newMin <= 0) {
+          newMin = 0;
+          newSec = 0;
+        } else {
+          newSec = 59;
+          newMin = min - 1;
+        }
+      }
+      const changedTask = { ...oldTask, min: timeToString(newMin), sec: timeToString(newSec) };
+      const newArr = [...todoData.slice(0, idx), changedTask, ...todoData.slice(idx + 1)];
+      return newArr;
+    });
+  };
+
+  const setTimerId = (itemId, timerId) => {
+    setTodoData((todoData) => {
+      const idx = todoData.findIndex((el) => el.id === itemId);
+      const oldTask = todoData[idx];
+      const changedTask = { ...oldTask, timerId };
       const newArr = [...todoData.slice(0, idx), changedTask, ...todoData.slice(idx + 1)];
       return newArr;
     });
@@ -114,9 +121,9 @@ function App() {
   };
 
   const clearCompleted = () => {
-    // eslint-disable-next-line no-shadow
     setTodoData((todoData) => todoData.filter((element) => !element.completedTask));
   };
+
   const doneCount = todoData.filter((el) => el.completedTask).length;
   const todoCount = todoData.length - doneCount;
 
@@ -127,7 +134,8 @@ function App() {
         <NewTaskForm onTaskAdded={addTask} />
       </header>
       <TaskList
-        updateTime={updateTime}
+        startTimer={startTimer}
+        setTimerId={setTimerId}
         todos={filteredItems()}
         onCompleted={completeTask}
         onEditing={editTask}

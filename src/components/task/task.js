@@ -1,35 +1,37 @@
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-function Task({ timer, label, date, onEditing, onDeleted, checked, onCompleted, updateTime }) {
-  const [min, setMin] = useState(timer.min);
-  const [sec, setSec] = useState(timer.sec);
+function Task({ timerId, label, date, onEditing, onDeleted, checked, onCompleted, startTimer, setTimerId, min, sec }) {
   const [play, setPlay] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!play) return;
-      if (sec === '00' && min === '00') return;
-      if (sec === '00' && min !== '00') {
-        const minutes = min[0] !== '0' && min.length > 1 ? `${min - 1}` : `0${min - 1}`;
-        setMin(minutes.padStart(2, '0'));
-        setSec('59');
-      } else {
-        const newSec = Number(sec - 1);
-        const newSecToString = newSec < 10 ? `0${newSec}` : newSec;
-        setSec(newSecToString);
-      }
+  let timer = timerId;
+
+  const playTimer = () => {
+    if (play) return;
+    timer = setInterval(() => {
+      startTimer();
     }, 1000);
-    updateTime(min, sec);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [min, play, sec]);
+    setTimerId(timer);
+    setPlay(true);
+  };
+
+  const pauseTimer = () => {
+    setTimerId(null);
+    clearInterval(timer);
+    setPlay(false);
+  };
 
   const onChange = (e) => {
     onCompleted(e);
+    setTimerId(null);
+    clearInterval(timer);
     setPlay(false);
+  };
+
+  const onDelete = () => {
+    clearInterval(timer);
+    onDeleted();
   };
 
   return (
@@ -38,8 +40,8 @@ function Task({ timer, label, date, onEditing, onDeleted, checked, onCompleted, 
       <label>
         <span className="title">{label}</span>
         <span className="description">
-          <button className="icon icon-play" onClick={() => setPlay(true)} />
-          <button className="icon icon-pause" onClick={() => setPlay(false)} />
+          <button className="icon icon-play" onClick={playTimer} />
+          <button className="icon icon-pause" onClick={pauseTimer} />
           {min}:{sec}
         </span>
         <span className="description">
@@ -51,7 +53,7 @@ function Task({ timer, label, date, onEditing, onDeleted, checked, onCompleted, 
         </span>
       </label>
       <button className="icon icon-edit" onClick={onEditing} />
-      <button className="icon icon-destroy" onClick={onDeleted} />
+      <button className="icon icon-destroy" onClick={onDelete} />
     </div>
   );
 }
